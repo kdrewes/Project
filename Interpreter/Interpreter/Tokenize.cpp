@@ -127,7 +127,7 @@ char Tokenize :: Verify_Token_Helper(char character)
 // Checks if isInteger boolean variable is currently set as 'true'
 void Tokenize :: checkInteger(char character)
 {
-    if(!isProcedure())
+    if(!isProcedure(strdup("is regular procedure")))
     {
         if(isInteger(strdup("datatype")))
         {
@@ -147,7 +147,7 @@ void Tokenize :: checkInteger(char character)
 void Tokenize :: checkValue(char character)
 {
     
-    if(!isProcedure())
+    if(!isProcedure(strdup("is regular procedure")))
     {
         if(isValue(strdup("=")))
         {
@@ -211,7 +211,7 @@ void Tokenize :: checkValue(char character)
 // Check if isPrintf boolean variable is currently set as 'true'
 void Tokenize :: checkPrintF(char character)
 {
-    if(!isProcedure())
+    if(!isProcedure(strdup("is regular procedure")))
     {
         if(isPrintF(strdup("printf")))
         {
@@ -356,19 +356,27 @@ void Tokenize :: checkProcedure(char character)
     {
         
         if(isProcedure(1))
-            
+        {
             if(character == '(')
-            {
-                std::cout << "\n\nthis -> syntax = " << this -> syntax << std::endl;
-                std::cout << "\n\ncharacter = " << character << std::endl;
                 isProcedure("(");
-            }
+        
             else
                 throw std::invalid_argument("\n\nError - character must be ) not " + std::string(1,character));
-            
+        }
         
         else if(isProcedure(2))
         {
+            
+            if(isProcedure(strdup("(")))
+            {
+                std::string tempString = this -> syntax + character;
+                
+                if(tempString == "int" || tempString == "char" ||  tempString == "string")
+                    isProcedure("data type");
+                
+                else if(character == ')')
+                    isProcedure(")");
+            }
             
                
         }
@@ -550,7 +558,8 @@ TOKEN_TYPE Tokenize :: Read_Token()
             isInteger("datatype");
             return TOKEN_TYPE :: IDENTIFIER;
         }
-        else if(isInteger() && !isProcedure())
+    
+        else if(isInteger() && !isProcedure(strdup("is regular procedure")))
         {
             if(isInteger(strdup("datatype")))
             {
